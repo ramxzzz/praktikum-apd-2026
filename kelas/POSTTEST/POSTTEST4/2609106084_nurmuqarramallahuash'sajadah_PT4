@@ -1,0 +1,65 @@
+username = ["asep"]
+password = ["84"]
+jumlah_percobaan = 3
+saldo = 3000000
+
+
+
+while True:
+
+    print ("masukan username : ") 
+    username_input = input()
+    print ("masukan password : ")
+    password_input = input()
+
+
+    if username_input in username and password_input in password:
+         print("Login_berhasil ")
+         break
+
+    else: 
+         jumlah_percobaan -= 1
+    print("Username atau password salah. Sisa percobaan:", jumlah_percobaan)
+
+    if jumlah_percobaan == 0:
+        print("akun anda telah terblokir, silahkan hubungi admin bank")
+        exit()
+    
+
+if  username_input in username and password_input in password : print ("silahkan pilih menu dibawah")
+
+print ("======== menu ========")
+print ("1. Cek Saldo")
+print ("2. Tarik Tunai")
+print ("3. Setor Tunai")
+print ("4. keluar")
+pilihan = input("masukan pilihan anda (1-4): ")
+
+if pilihan == "1":
+    print(f"saldo anda saat ini sekarang : Rp.{saldo}")
+
+
+elif pilihan == "2":
+    tarik = int(input("masukan jumlah uang yang ingin di tarik : Rp."))
+    if tarik > saldo:
+        print("saldo anda tidak cukup")
+    else:
+        saldo -= tarik
+        print(f"tarik tunai berhasil, sisa saldo anda sekarang : Rp.{saldo}")
+        
+
+elif pilihan == "3":
+     setor = int(input("masukan nominal yang ingin disetor:  "))   
+
+     saldo += setor
+     print("saldo yang disetor: Rp", setor)
+     print("total saldo: Rp", saldo)
+
+elif pilihan == "4":
+    print("Terima kasih telah menggunakan layanan bank saya")
+    exit()
+
+else :
+    print("layanan tidak tersedia")
+
+
