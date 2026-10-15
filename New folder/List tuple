@@ -1,0 +1,20 @@
+#lemari = ["baju", "celana", 69, 7.2, True, 78, 222, 240]
+
+#angka1 = [ [1 , 2],  [3 , 4], ["kelas u poo"] ]
+#print (angka1[2])
+#angka2 = [2, 4, 6]
+#ulang = angka1 * 3
+#print(ulang)
+#angka = tuple
+#angka = (1, 2, 4, "kelas kamu", True)
+#print (angka)
+
+#ubah = list (angka)
+#angka.append(hai)
+
+#angka = tuple (ubah)
+
+#lemari = ("baju", "celana", "sepatu")
+#(atasan, *bawahan) = lemari
+
+#print(bawahan)
