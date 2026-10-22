@@ -1,0 +1,284 @@
+import os
+
+mobil = { 1: {"merek": "BMW", "model": "320i", "tahun": 2022, "harga": 900000000, "stok": 4},
+    2: {"merek": "BMW", "model": "x1", "tahun": 2023, "harga": 950000000, "stok": 2},
+    3: {"merek": "BMW", "model": "x5", "tahun": 2021, "harga": 1800000000, "stok": 2},
+    4: {"merek": "Nissan", "model": "Livina", "tahun": 2021, "harga": 230000000, "stok": 2},
+    5: {"merek": "Nissan", "model": "X-Trail", "tahun": 2022, "harga": 580000000, "stok": 3},
+    6: {"merek": "Nissan", "model": "Terra", "tahun": 2023, "harga": 750000000, "stok": 2},
+    7: {"merek": "Toyota", "model": "Avanza", "tahun": 2023, "harga": 230000000, "stok": 3},
+    8: {"merek": "Toyota", "model": "Innova", "tahun": 2022, "harga": 420000000, "stok": 4},
+    9: {"merek": "Toyota", "model": "Fortuner", "tahun": 2023, "harga": 650000000, "stok": 2}}
+   
+
+id_berikutnya = 10
+
+# username, password, role
+akun = {"DealerRamzz": {"password": "sayaadmin123", "role": "admin"},
+    "raja makelar": {"password": "aseporangkaya", "role": "pengguna"}}
+
+
+program_berjalan = True
+
+while program_berjalan:
+    print("======== Dealer aphrodite Jual Beli Mobil =========")
+    print("1. login")
+    print("2. register")
+    print("3. lihat stok mobil")
+    print("4. keluar")
+
+    pilihan = input("pilihan menu: ").strip()
+
+    if pilihan == "1":
+        print("======== Login ========")
+        username = input("username: ").strip()
+        password = input("password: ").strip()
+
+        if username in akun and akun[username]["password"] == password:
+            print("Selamat Datang")
+
+            # otoritas admin
+            if akun[username]["role"] == "admin":
+                otoritas_admin = True
+
+                while otoritas_admin:
+                    print("======== menu admin ========")
+                    print("1. stok mobil")
+                    print("2. tambah mobil")
+                    print("3. ubah data mobil")
+                    print("4. hapus data mobil")
+                    print("5. Logout")
+
+                    pilihan_admin = input("pilih menu: ").strip()
+
+                    # 1. stok mobil
+                    if pilihan_admin == "1":
+                        if not mobil:
+                            print("stok mobil kosong")
+                        else:
+                            print("======== daftar mobil ========")
+                            print("id, merek, model, tahun, harga, stok")
+
+                            for id_mobil in mobil:
+                                data = mobil[id_mobil]
+                                print(id_mobil, "/", data["merek"], "/", data["model"], "/",
+                                      data["tahun"], "Rp.", data["harga"], ":", data["stok"])
+
+                    # menambah mobil
+                    elif pilihan_admin == "2":
+                        print("======== tambah mobil ========")
+                        merek = input("merek mobil: ").strip()
+                        model = input("model mobil: ").strip()
+
+                        if merek == "" or model == "":
+                            print("silahkan isi merek dan model mobil")
+                        else:
+                            tahun_teks = input("tahun mobil: ").strip()
+                            harga_teks = input("harga mobil: ").strip()
+                            stok_teks = input("jumlah stok: ").strip()
+
+                            if tahun_teks.isdigit() and harga_teks.isdigit() and stok_teks.isdigit():
+                                tahun = int(tahun_teks)
+                                harga = int(harga_teks)
+                                stok = int(stok_teks)
+
+                                mobil[id_berikutnya] = {
+                                    "merek": merek,
+                                    "model": model,
+                                    "tahun": tahun,
+                                    "harga": harga,
+                                    "stok": stok
+                                }
+
+                                print("mobil berhasil ditambahkan", id_berikutnya)
+                                id_berikutnya += 1
+                            else:
+                                print("tahun, harga, dan stok berupa angka")
+
+                    # mengubah data mobil
+                    elif pilihan_admin == "3":
+                        print("======== ubah data mobil ========")
+
+                        for id_mobil in mobil:
+                            data = mobil[id_mobil]
+                            print("id", id_mobil, "/", data["merek"], data["model"],
+                                  "/ tahun", data["tahun"], "/ harga :Rp", data["harga"],
+                                  "/ stok:", data["stok"])
+
+                        id_teks = input("masukkan id mobil yang ingin diubah: ").strip()
+
+                        if id_teks.isdigit():
+                            id_dicari = int(id_teks)
+
+                            if id_dicari in mobil:
+                                data = mobil[id_dicari]
+
+                                merek_baru = input("Merek baru (Enter jika tetap): ").strip()
+                                model_baru = input("Model baru (Enter jika tetap): ").strip()
+                                tahun_baru = input("Tahun baru (Enter jika tetap): ").strip()
+                                harga_baru = input("Harga baru (Enter jika tetap): ").strip()
+                                stok_baru = input("Stok baru (Enter jika tetap): ").strip()
+
+                                if merek_baru != "":
+                                    data["merek"] = merek_baru
+                                if model_baru != "":
+                                    data["model"] = model_baru
+                                if tahun_baru != "":
+                                    if tahun_baru.isdigit():
+                                        data["tahun"] = int(tahun_baru)
+                                    else:
+                                        print("Tahun harus berupa angka.")
+                                if harga_baru != "":
+                                    if harga_baru.isdigit():
+                                        data["harga"] = int(harga_baru)
+                                    else:
+                                        print("Harga harus berupa angka.")
+                                if stok_baru != "":
+                                    if stok_baru.isdigit():
+                                        data["stok"] = int(stok_baru)
+                                    else:
+                                        print("Stok harus berupa angka.")
+
+                                print("Data mobil berhasil diperbarui.")
+                            else:
+                                print("ID mobil tidak ditemukan.")
+                        else:
+                            print("ID harus berupa angka.")
+
+                    # hapus data mobil
+                    elif pilihan_admin == "4":
+                        print("======== hapus mobil ========")
+
+                        for id_mobil in mobil:
+                            data = mobil[id_mobil]
+                            print("id", id_mobil, "/", data["merek"], data["model"])
+
+                        id_teks = input("masukan id mobil yang mau di hapus: ").strip()
+
+                        if id_teks.isdigit():
+                            id_dicari = int(id_teks)
+
+                            if id_dicari in mobil:
+                                del mobil[id_dicari]
+                                print("Mobil berhasil dihapus.")
+                            else:
+                                print("ID mobil tidak ditemukan.")
+                        else:
+                            print("ID harus berupa angka.")
+
+                    elif pilihan_admin == "5":
+                        print("Admin berhasil logout.")
+                        otoritas_admin = False
+                    else:
+                        print("Pilihan tidak tersedia.")
+
+            # menu pengguna
+            else:
+                menu_pengguna = True
+
+                while menu_pengguna:
+                    print("======== menu pengguna ========")
+                    print("1.stok mobil")
+                    print("2.beli mobil")
+                    print("3.Logout")
+
+                    pilihan_pengguna = input("pilih menu: ").strip()
+
+                    if pilihan_pengguna == "1":
+                        if not mobil:
+                            print("stok mobil sedang kosong")
+                        else:
+                            print("======== daftar mobil ========")
+                            print("id, merek, model, tahun, harga, stok")
+
+                            for id_mobil in mobil:
+                                data = mobil[id_mobil]
+                                print(id_mobil, "/", data["merek"], "/", data["model"], "/",
+                                      data["tahun"], "Rp.", data["harga"], ":", data["stok"])
+
+                    elif pilihan_pengguna == "2":
+                        print("========= mobil yang ready =========")
+
+                        for id_mobil in mobil:
+                            data = mobil[id_mobil]
+                            print(id_mobil, "/", data["merek"], "/", data["model"], "/",
+                                  data["tahun"], "Rp.", data["harga"], ":", data["stok"])
+
+                        id_teks = input("masukan id mobil yang ingin di beli: ").strip()
+
+                        if id_teks.isdigit():
+                            id_dicari = int(id_teks)
+
+                            if id_dicari in mobil:
+                                data = mobil[id_dicari]
+
+                                if data["stok"] == 0:
+                                    print("mobil sudah terjual")
+                                else:
+                                    jumlah_teks = input("jumlah mobil yang ingin dibeli: ").strip()
+
+                                    if jumlah_teks.isdigit():
+                                        jumlah = int(jumlah_teks)
+
+                                        if jumlah > 0 and jumlah <= data["stok"]:
+                                            data["stok"] -= jumlah
+                                            total = data["harga"] * jumlah
+
+                                            print("terima kasih, pembayaran anda telah berhasil")
+                                            print("total harga: Rp", total)
+                                            print("sisa stok :", data["stok"])
+                                        else:
+                                            print("jumlah yang dibayarkan kurang" "atau stok tidak ada")
+                                    else:
+                                        print("eror, jumlah harus angka")
+                            else:
+                                print("data tidak di temukan")
+                        else:
+                            print("tidak dapat membaca data")
+
+                    elif pilihan_pengguna == "3":
+                        print("Terima kasih,  silahkan datang kembali")
+                        menu_pengguna = False
+                    else:
+                        print("pilihan tidak tersedia")
+        else:
+            print("username atau password")
+
+    # register
+    elif pilihan == "2":
+        print("======== REGISTER =========")
+        username_baru = input("Buat username: ").strip()
+        password_baru = input("Buat password: ").strip()
+
+        if username_baru == "" or password_baru == "":
+            print("Username dan password wajib diisi.")
+        elif username_baru in akun:
+            print("Username sudah digunakan.")
+        else:
+            akun[username_baru] = {
+                "password": password_baru,
+                "role": "pengguna"
+            }
+            print("Registrasi berhasil. Silakan login.")
+
+    elif pilihan == "3":
+        if not mobil:
+            print("stok mobil kosong")
+        else:
+            print("======== daftar mobil ========")
+            print("id, merek, model, tahun, harga, stok")
+
+            for id_mobil in mobil:
+                data = mobil[id_mobil]
+                print(id_mobil, "/", data["merek"], "/", data["model"], "/",
+                      data["tahun"], "Rp.", data["harga"], ":", data["stok"])
+
+    elif pilihan == "4":
+        print("terima kasih telah berkunjung")
+        program_berjalan = False
+    else:
+        print("pilihan tidak ada")
+
+    if program_berjalan:
+        input("======== Tekan enter untuk melanjutkan.... =========")
+        os.system("cls" if os.name == "nt" else "clear")
