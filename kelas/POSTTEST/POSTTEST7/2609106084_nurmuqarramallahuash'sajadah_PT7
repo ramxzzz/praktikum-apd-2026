@@ -1,0 +1,236 @@
+"""Program dealer mobil: pengelolaan stok dengan login admin dan pengguna."""
+
+import os
+from datetime import datetime
+
+# Variabel global: data utama dan status aplikasi
+mobil = [
+    [1, "BMW", "320i", 2022, 900_000_000, 4],
+    [2, "BMW", "X1", 2023, 950_000_000, 2],
+    [3, "BMW", "X5", 2021, 1_800_000_000, 2],
+    [4, "Nissan", "Livina", 2021, 230_000_000, 2],
+    [5, "Nissan", "X-Trail", 2022, 580_000_000, 3],
+    [6, "Nissan", "Terra", 2023, 750_000_000, 2],
+    [7, "Toyota", "Avanza", 2023, 230_000_000, 3],
+    [8, "Toyota", "Innova", 2022, 420_000_000, 4],
+    [9, "Toyota", "Fortuner", 2023, 650_000_000, 2],
+]
+akun = [["DealerRamzz", "sayaadmin123", "admin"], ["raja makelar", "aseporangkaya", "pengguna"]]
+id_berikutnya = 10
+program_berjalan = True
+riwayat_transaksi = []
+
+
+def rupiah(nilai):
+    """Format harga dalam rupiah (fungsi berparameter)."""
+    return f"Rp {nilai:,}".replace(",", ".")
+
+
+def cari_mobil(id_mobil):
+    """Cari mobil berdasarkan ID; mengembalikan data atau None."""
+    for data_mobil in mobil:  # variabel lokal
+        if data_mobil[0] == id_mobil:
+            return data_mobil
+    return None
+
+
+def tampilkan_mobil():
+    """Tampilkan daftar mobil (fungsi tanpa parameter)."""
+    if not mobil:
+        print("Stok mobil kosong.")
+        return
+    print("ID | Merek | Model | Tahun | Harga | Stok")
+    print("-" * 70)
+    for data_mobil in mobil:
+        print(f"{data_mobil[0]} | {data_mobil[1]} | {data_mobil[2]} | {data_mobil[3]} | {rupiah(data_mobil[4])} | {data_mobil[5]}")
+
+
+def konfirmasi_aksi(pesan):
+    """Fungsi berparameter yang menangani jawaban konfirmasi."""
+    jawaban = input(f"{pesan} (y/t): ").strip().lower()
+    return jawaban == "y"
+
+
+def jeda():
+    """Jeda sebelum layar dibersihkan (fungsi tanpa parameter)."""
+    input("Tekan Enter untuk melanjutkan...")
+
+
+def baca_bilangan(pesan, minimum=0):
+    """Prosedur pembacaan angka dengan penanganan kesalahan berulang."""
+    while True:
+        teks = input(pesan).strip()
+        try:
+            angka = int(teks)
+            if angka < minimum:
+                print(f"Nilai minimal {minimum}.")
+                continue
+            return angka
+        except ValueError:
+            print("Input harus berupa bilangan bulat. Coba lagi.")
+
+
+def menu_admin():
+    """Prosedur menu khusus admin."""
+    global id_berikutnya
+    while True:
+        print("\n=== MENU ADMIN ===\n1. Lihat stok\n2. Tambah mobil\n3. Ubah mobil\n4. Hapus mobil\n5. Lihat transaksi\n6. Logout")
+        pilihan_admin = input("Pilih: ").strip()
+        try:
+            if pilihan_admin == "1":
+                tampilkan_mobil()
+            elif pilihan_admin == "2":
+                merek = input("Merek: ").strip()
+                model = input("Model: ").strip()
+                if not merek or not model:
+                    raise ValueError("Merek dan model wajib diisi.")
+                tahun = baca_bilangan("Tahun: ", 1886)
+                harga = baca_bilangan("Harga: ", 1)
+                stok = baca_bilangan("Stok: ", 0)
+                mobil.append([id_berikutnya, merek, model, tahun, harga, stok])
+                print(f"Mobil ditambahkan dengan ID {id_berikutnya}.")
+                id_berikutnya += 1
+            elif pilihan_admin == "3":
+                tampilkan_mobil()
+                target = cari_mobil(baca_bilangan("ID mobil: ", 1))
+                if target is None:
+                    print("ID tidak ditemukan.")
+                    continue
+                nilai_baru = [input("Merek baru (Enter untuk tetap): ").strip(), input("Model baru (Enter untuk tetap): ").strip()]
+                for indeks, nilai in enumerate(nilai_baru, 1):
+                    if nilai:
+                        target[indeks] = nilai
+                for indeks, label, minimum in [(3, "Tahun", 1886), (4, "Harga", 1), (5, "Stok", 0)]:
+                    teks = input(f"{label} baru (Enter untuk tetap): ").strip()
+                    if teks:
+                        try:
+                            angka = int(teks)
+                            if angka < minimum:
+                                raise ValueError
+                            target[indeks] = angka
+                        except ValueError:
+                            print(f"{label} tidak valid; nilai lama dipertahankan.")
+                print("Data mobil diperbarui.")
+            elif pilihan_admin == "4":
+                tampilkan_mobil()
+                target = cari_mobil(baca_bilangan("ID mobil yang dihapus: ", 1))
+                if target is None:
+                    print("ID tidak ditemukan.")
+                elif konfirmasi_aksi(f"Hapus {target[1]} {target[2]}?"):
+                    mobil.remove(target)
+                    print("Mobil berhasil dihapus.")
+            elif pilihan_admin == "5":
+                if not riwayat_transaksi:
+                    print("Belum ada transaksi.")
+                for transaksi in riwayat_transaksi:
+                    print(f"{transaksi[0]} | {transaksi[1]} | {transaksi[2]} unit | {rupiah(transaksi[3])}")
+            elif pilihan_admin == "6":
+                print("Admin berhasil logout.")
+                return
+            else:
+                print("Pilihan tidak tersedia.")
+        except (ValueError, EOFError) as error:
+            print(f"Kesalahan input: {error}")
+
+
+def menu_pengguna(username):
+    """Prosedur menu pengguna biasa; pengguna dapat melihat dan membeli."""
+    while True:
+        print("\n=== MENU PENGGUNA ===\n1. Lihat stok\n2. Beli mobil\n3. Logout")
+        pilihan_pengguna = input("Pilih: ").strip()
+        if pilihan_pengguna == "1":
+            tampilkan_mobil()
+        elif pilihan_pengguna == "2":
+            try:
+                tampilkan_mobil()
+                target = cari_mobil(baca_bilangan("ID mobil: ", 1))
+                if target is None:
+                    print("ID mobil tidak ditemukan.")
+                    continue
+                if target[5] == 0:
+                    print("Stok mobil habis.")
+                    continue
+                jumlah = baca_bilangan("Jumlah yang dibeli: ", 1)
+                if jumlah > target[5]:
+                    print(f"Stok tidak mencukupi. Stok tersedia: {target[5]}.")
+                    continue
+                total = jumlah * target[4]
+                if konfirmasi_aksi(f"Total {rupiah(total)}. Lanjutkan pembelian?"):
+                    target[5] -= jumlah
+                    riwayat_transaksi.append([username, f"{target[1]} {target[2]}", jumlah, total, datetime.now().strftime("%Y-%m-%d %H:%M")])
+                    print(f"Pembelian berhasil. Total: {rupiah(total)}; sisa stok: {target[5]}.")
+            except (ValueError, EOFError) as error:
+                print(f"Kesalahan input: {error}")
+        elif pilihan_pengguna == "3":
+            print("Terima kasih, silakan datang kembali.")
+            return
+        else:
+            print("Pilihan tidak tersedia.")
+
+
+def login():
+    """Login dengan pembatasan percobaan rekursif (poin fungsi rekursif)."""
+    return _login_dengan_percobaan(3)
+
+
+def _login_dengan_percobaan(sisa):
+    if sisa == 0:
+        print("Kesempatan login habis. Silakan coba lagi nanti.")
+        return None
+    username = input("Username: ").strip()
+    password = input("Password: ").strip()
+    for data_akun in akun:
+        if data_akun[0] == username and data_akun[1] == password:
+            print(f"Selamat datang, {username}!")
+            return data_akun
+    print(f"Username atau password salah. Sisa percobaan: {sisa - 1}.")
+    return _login_dengan_percobaan(sisa - 1)
+
+
+def registrasi():
+    """Registrasi akun pengguna biasa."""
+    username_baru = input("Buat username: ").strip()
+    password_baru = input("Buat password: ").strip()
+    if not username_baru or not password_baru:
+        print("Username dan password wajib diisi.")
+        return
+    if any(data_akun[0].lower() == username_baru.lower() for data_akun in akun):
+        print("Username sudah digunakan.")
+        return
+    akun.append([username_baru, password_baru, "pengguna"])
+    print("Registrasi berhasil. Silakan login.")
+
+
+def main():
+    """Alur utama program; menangani input menu dan gangguan terminal."""
+    global program_berjalan
+    while program_berjalan:
+        print("\n=== DEALER APHRODITE JUAL BELI MOBIL ===\n1. Login\n2. Register\n3. Lihat stok\n4. Keluar")
+        try:
+            pilihan = input("Pilihan menu: ").strip()
+            if pilihan == "1":
+                pengguna = login()
+                if pengguna:
+                    if pengguna[2] == "admin":
+                        menu_admin()
+                    else:
+                        menu_pengguna(pengguna[0])
+            elif pilihan == "2":
+                registrasi()
+            elif pilihan == "3":
+                tampilkan_mobil()
+            elif pilihan == "4":
+                program_berjalan = False
+                print("Terima kasih telah berkunjung.")
+            else:
+                print("Pilihan tidak tersedia.")
+            if program_berjalan:
+                jeda()
+                os.system("cls" if os.name == "nt" else "clear")
+        except (EOFError, KeyboardInterrupt):
+            print("\nProgram dihentikan dengan aman.")
+            program_berjalan = False
+
+
+if __name__ == "__main__":
+    main()

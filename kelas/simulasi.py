@@ -1,3 +1,14 @@
-#angka ={1, 2, 3, 2+1+3}
-prima = {2, 3, 5, 7}
+#eror handling
+
+
+#def sapa():
+ #   print("hallo {nama}")
+
+#def luas(sisi):
+ #   luas = sisi ** 2
+  #  return luas
+#print(luas)    
+ 
+
+
 
