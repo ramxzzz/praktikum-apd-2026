@@ -1,141 +1,60 @@
+"""Program dealer mobil Aphrodite."""
 
-#          SISTEM TOP UP GAME
+import os
 
-
-print("=" * 45)
-print("        SISTEM TOP UP GAME")
-print("=" * 45)
-
-
-# LOGIN
+from auth import login, registrasi
+from data import mobil
+from menus import menu_admin, menu_pengguna
+from tampilan import tampilkan_mobil
 
 
-username_benar = "aphrodite"
-password_benar = "84"   # 2 digit NIM
+def jeda():
+    input("Tekan Enter untuk melanjutkan...")
 
-print("\n--- LOGIN ---")
 
-username = input("Username : ")
-password = input("Password : ")
+def main():
+    berjalan = True
 
-# Validasi login
-if username == username_benar and password == password_benar:
+    while berjalan:
+        print("\n=== DEALER APHRODITE JUAL BELI MOBIL ===")
+        print("1. Login")
+        print("2. Register")
+        print("3. Lihat stok")
+        print("4. Keluar")
 
-    print("\nLogin Berhasil!")
+        try:
+            pilihan = input("Pilihan menu: ").strip()
 
-    # MENU TOP UP
+            if pilihan == "1":
+                pengguna = login()
 
-    print("\n" + "=" * 45)
-    print("           MENU TOP UP")
-    print("=" * 45)
+                if pengguna:
+                    if pengguna[2] == "admin":
+                        menu_admin()
+                    else:
+                        menu_pengguna(pengguna[0])
 
-    id_player = input("ID Player : ")
+            elif pilihan == "2":
+                registrasi()
 
-    print("\nPilihan Game:")
-    print("1. Genshin Impact")
-    print("2. Minecraft")
-    print("3. Mobile Legends")
+            elif pilihan == "3":
+                tampilkan_mobil(mobil)
 
-    nama_game = input("Nama Game : ")
+            elif pilihan == "4":
+                berjalan = False
+                print("Terima kasih telah berkunjung.")
 
-    print("\nKategori Top Up:")
-    print("1. Kecil    = Rp15.000")
-    print("2. Menengah = Rp50.000")
-    print("3. Besar    = Rp150.000")
+            else:
+                print("Pilihan tidak tersedia.")
 
-    kategori = input("Kategori Top Up : ")
+            if berjalan:
+                jeda()
+                os.system("cls" if os.name == "nt" else "clear")
 
-    print("\nMetode Pembayaran:")
-    print("1. Pulsa")
-    print("2. E-Wallet")
+        except (EOFError, KeyboardInterrupt):
+            print("\nProgram dihentikan dengan aman.")
+            berjalan = False
 
-    pembayaran = input("Metode Pembayaran : ")
 
-     # MENENTUKAN HARGA TOP UP
-
-    if kategori.lower() == "kecil":
-        harga_dasar = 15000
-
-    elif kategori.lower() == "menengah":
-        harga_dasar = 50000
-
-    elif kategori.lower() == "besar":
-        harga_dasar = 150000
-
-    else:
-        print("\nKategori Top Up tidak valid!")
-        exit()
-
-    
-    # BIAYA ADMIN
-    # TERNARY OPERATOR
-    
-
-    biaya_admin = 2500 if pembayaran.lower() == "pulsa" else 500
-
-    # Validasi metode pembayaran
-    if pembayaran.lower() != "pulsa" and pembayaran.lower() != "e-wallet":
-        print("\nMetode pembayaran tidak valid!")
-        exit()
-
-   
-    # TOTAL PEMBAYARAN
-
-    total_bayar = harga_dasar + biaya_admin
-
-    print("\n" + "=" * 45)
-    print("        TOTAL PEMBAYARAN")
-    print("=" * 45)
-
-    print(f"Harga Top Up : Rp{harga_dasar:,}".replace(",", "."))
-    print(f"Biaya Admin  : Rp{biaya_admin:,}".replace(",", "."))
-    print(f"Total Bayar  : Rp{total_bayar:,}".replace(",", "."))
-
-    print("=" * 45)
-
-   
-    # PEMBAYARAN
-    
-
-    uang_bayar = int (input("Uang Dibayarkan : Rp"))
-
-    # Validasi pembayaran
-    if uang_bayar < total_bayar:
-
-        
-        print("        TRANSAKSI GAGAL")
-        print("Saldo tidak mencukupi.")
-        print(f"Uang Kurang : Rp{total_bayar - uang_bayar:,}".replace(",", "."))
-
-    else:
-
-        kembalian = uang_bayar - total_bayar
-        print("Tranksaksi berhasil!")
-        print("kembalian :", kembalian)
-
-        # STRUK PEMBELIAN
-        
-        print("\n")
-        print("=" * 45)
-        print("           STRUK PEMBELIAN")
-        print("=" * 45)
-
-        print(f"ID Player        : {id_player}")
-        print(f"Nama Game        : {nama_game}")
-        print(f"Kategori Top Up  : {kategori}")
-        print(f"Metode Pembayaran: {pembayaran}")
-        print(f"Biaya Admin      : Rp{biaya_admin:,}".replace(",", "."))
-        print(f"Total Bayar      : Rp{total_bayar:,}".replace(",", "."))
-        print(f"Uang Dibayar     : Rp{uang_bayar:,}".replace(",", "."))
-        print(f"Kembalian        : Rp{kembalian:,}".replace(",", "."))
-
-        print("=" * 45)
-        print("        TRANSAKSI BERHASIL!")
-        print("          Terima Kasih")
-        print("=" * 45)
-
-else:
-
-    print("             LOGIN GAGAL")
-    print("Username atau Password salah.")
-    print("Program berakhir.")
+if __name__ == "__main__":
+    main()

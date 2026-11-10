@@ -303,7 +303,8 @@ while program_berjalan:
         print("pilihan tidak ada")
     if program_berjalan:
         input("======== Tekan enter untuk melanjutkan.... =========") 
-        os.system("cls" if os.name == "nt" else "clear")   
+       
+           
 
 
 
